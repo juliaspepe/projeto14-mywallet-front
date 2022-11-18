@@ -4,7 +4,11 @@ import { useContext } from "react"
 import { Link } from "react-router-dom"
 
 export default function PageLogin() {
-    const { setEmail, setPassword } = useContext(InfoContext)
+    const { email, setEmail, password, setPassword, setName } = useContext(InfoContext)
+
+    function checkInfo() {
+        console.log('função funcionando')
+    }
 
     return (
         <>
@@ -12,7 +16,7 @@ export default function PageLogin() {
                 <h1>My Wallet</h1>
                 <CadaInput type="text" placeholder="E-mail" onChange={e => setEmail(e.target.value)}></CadaInput>
                 <CadaInput type="password" placeholder="Senha" onChange={e => setPassword(e.target.value)}></CadaInput>
-                <BotaoEntrar> Entrar </BotaoEntrar>
+                <BotaoEntrar OnClick={checkInfo}> Entrar </BotaoEntrar>
                 <Link to={'/cadastro'}>
                     <h2> Primeira vez? Cadastre-se! </h2>
                 </Link>
