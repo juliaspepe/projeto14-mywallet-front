@@ -1,18 +1,40 @@
 import styled from "styled-components"
 import { InfoContext } from "./InfoContext"
 import { useContext } from "react"
-import { Link } from "react-router-dom"
+import axios from "axios"
+import { useNavigate } from "react-router-dom"
 
 export default function PageNovaSaida(){
-    const { setEmail, setPassword } = useContext(InfoContext)
+    const { config, value, setValue, description, setDescription } = useContext(InfoContext)
+    const navigate = useNavigate()
+
+    console.log(value)
+    console.log(description)
+
+    function saida() {
+        if (value && description) {
+             const requisicao = axios.post("http://localhost:5000/saida", 
+                 {   
+                     value,
+                     description
+                 }, config);
+ 
+             requisicao.then((item) => {
+                navigate('/registros')
+            });
+             requisicao.catch((err) => console.log(err));
+         } else {
+             alert("favor preencheer as todos as informações corretamente");
+         }
+     }
 
     return (
         <>
             <Container>
                 <Title>Nova saída</Title>
-                <CadaInput type="text" placeholder="Valor" onChange={e => setEmail(e.target.value)}></CadaInput>
-                <CadaInput type="text" placeholder="Descrição" onChange={e => setPassword(e.target.value)}></CadaInput>
-                <BotaoEntrar> Salvar saída </BotaoEntrar>
+                <CadaInput type="number" placeholder="Valor" onChange={e => setValue(e.target.value)}></CadaInput>
+                <CadaInput type="text" placeholder="Descrição" onChange={e => setDescription(e.target.value)}></CadaInput>
+                <BotaoEntrar onClick={saida}> Salvar saída </BotaoEntrar>
             </Container>
         </>
     )

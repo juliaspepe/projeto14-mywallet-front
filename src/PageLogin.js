@@ -1,13 +1,31 @@
 import styled from "styled-components"
 import { InfoContext } from "./InfoContext"
 import { useContext } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import axios from "axios"
 
 export default function PageLogin() {
-    const { email, setEmail, password, setPassword, setName } = useContext(InfoContext)
+    const { email, setEmail, password, setPassword, setUserName } = useContext(InfoContext)
+    const navigate = useNavigate();
 
-    function checkInfo() {
-        console.log('função funcionando')
+    function checkInfo(e) {
+        
+        if (email && password) {
+            const requisicao = axios.post("http://localhost:5000/sign-in",
+                {
+                    email,
+                    password
+                });
+
+            requisicao.then((item) => {
+                localStorage.setItem('token', item.data.token);
+                setUserName(item.data.name)
+                navigate('/registros')
+            });
+            requisicao.catch(() => alert('informação incorreta ou cadastro inexistente'));
+        } else {
+            alert('favor preencher todas as informações')
+        }
     }
 
     return (
@@ -16,7 +34,7 @@ export default function PageLogin() {
                 <h1>My Wallet</h1>
                 <CadaInput type="text" placeholder="E-mail" onChange={e => setEmail(e.target.value)}></CadaInput>
                 <CadaInput type="password" placeholder="Senha" onChange={e => setPassword(e.target.value)}></CadaInput>
-                <BotaoEntrar OnClick={checkInfo}> Entrar </BotaoEntrar>
+                <BotaoEntrar onClick={checkInfo}> Entrar </BotaoEntrar>
                 <Link to={'/cadastro'}>
                     <h2> Primeira vez? Cadastre-se! </h2>
                 </Link>

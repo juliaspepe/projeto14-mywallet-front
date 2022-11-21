@@ -1,10 +1,29 @@
 import styled from "styled-components"
 import { InfoContext } from "./InfoContext"
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import { Link } from "react-router-dom"
+import axios from "axios"
 
 export default function PageCadastro(){
-    const { setEmail, setPassword, setName } = useContext(InfoContext)
+    const { email, setEmail, password, setPassword, name, setName } = useContext(InfoContext);
+    const [passwordConfirmation, setPasswordConfirmation] = useState();
+
+    function cadastro() {
+        
+        if (name && email && password && password === passwordConfirmation) {
+            const requisicao = axios.post("http://localhost:5000/sign-up",
+                {   
+                    name,
+                    email,
+                    password
+                });
+
+            requisicao.then((item) => alert('cadastro realizado com sucesso!'));
+            requisicao.catch((err) => console.log(err));
+        } else {
+            alert("favor preencheer as todos as informações corretamente");
+        }
+    }
 
     return (
         <>
@@ -13,9 +32,9 @@ export default function PageCadastro(){
                 <CadaInput type="text" placeholder="Nome" onChange={e => setName(e.target.value)}></CadaInput>
                 <CadaInput type="text" placeholder="E-mail" onChange={e => setEmail(e.target.value)}></CadaInput>
                 <CadaInput type="password" placeholder="Senha" onChange={e => setPassword(e.target.value)}></CadaInput>
-                <CadaInput type="password" placeholder="Confirmar a senha" onChange={e => setPassword(e.target.value)}></CadaInput>
-                <BotaoEntrar> Cadastrar </BotaoEntrar>
-                <Link to={'/PageCadastro'}>
+                <CadaInput type="password" placeholder="Confirmar a senha" onChange={e => setPasswordConfirmation(e.target.value)}></CadaInput>
+                <BotaoEntrar onClick={cadastro}> Cadastrar </BotaoEntrar>
+                <Link to={'/'}>
                     <h2> Já tem uma conta? Entre agora! </h2>
                 </Link>
             </Container>
